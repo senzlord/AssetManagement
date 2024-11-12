@@ -25,9 +25,13 @@
                 @if($permissions->isEmpty())
                     <p>No {{ strtolower($group) }} assigned.</p>
                 @else
-                    <ul>
+                    <ul style="list-style-type: none; padding-left: 0;">
                         @foreach($permissions as $permission)
-                            <li>{{ $permission }}</li>
+                            <li>
+                                <!-- Checkbox that is disabled, checked if the user has permission -->
+                                <input type="checkbox" disabled {{ $user->hasPermissionTo($permission) ? 'checked' : '' }}>
+                                <label class="form-check-label" style="color: inherit;">{{ $permission }}</label>
+                            </li>
                         @endforeach
                     </ul>
                 @endif
