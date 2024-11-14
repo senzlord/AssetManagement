@@ -21,6 +21,8 @@ class UserListController extends Controller
 
     public function index()
     {
+        log_action('info', 'User viewed the user list');
+
         // Check if the user has the "create account" permission
         if (!Auth::user()->can('create account')) {
             abort(403, 'Unauthorized action.');
@@ -35,13 +37,18 @@ class UserListController extends Controller
     // Show the form for creating a new user
     public function create()
     {
+        log_action('info', 'User accessed the create user form');
+
         // Ensure user has permission
         if (!Auth::user()->can('create account')) {
             abort(403, 'Unauthorized action.');
         }
 
-        // Get all roles for the role selection dropdown
-        $roles = Role::all();
+        if (Auth::user()->hasRole('user')) {
+            $roles = Role::where('name', 'user')->get(); // Only user role is available for regular users
+        } else {
+            $roles = Role::all(); // Admin can see all roles
+        }
 
         return view('users.create', compact('roles'));
     }
@@ -49,6 +56,11 @@ class UserListController extends Controller
     // Handle form submission to store a new user
     public function store(Request $request)
     {
+        // Check if the authenticated user is an admin
+        if (Auth::user()->hasRole('user') && $request->role !== 'user') {
+            return redirect()->route('users.index')->with('error', 'You can only create users.');
+        }
+
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
@@ -62,6 +74,7 @@ class UserListController extends Controller
 
         // Check if validation fails
         if ($validator->fails()) {
+            log_action('error', 'Validation failed during user creation: ' . json_encode($validator->errors()));
             return redirect()->route('users.create')
                 ->withErrors($validator) // Pass validation errors to the session
                 ->withInput(); // Keep the input data for repopulation
@@ -94,6 +107,7 @@ class UserListController extends Controller
             }
         }
 
+        log_action('success', "New user '{$user->name}' (ID: {$user->id}) created with role '{$request->role}'.");
         // Redirect back to user list with success message
         return redirect()->route('users.index')->with('success', 'User created successfully with assigned role.');
     }
@@ -116,6 +130,8 @@ class UserListController extends Controller
                 ->withErrors(['error' => 'The user has been deleted and cannot be edited.']);
         }
 
+        log_action('info', "User accessed the edit form for user '{$user->name}' (ID: {$user->id})");
+
         // If the user is not deleted, proceed with the normal edit process
         $roles = Role::all();
         return view('users.edit', compact('user', 'roles'));
@@ -135,6 +151,7 @@ class UserListController extends Controller
 
         // Check if validation fails
         if ($validator->fails()) {
+            log_action('error', 'Validation failed during user update (ID: ' . $id . '): ' . json_encode($validator->errors()));
             return redirect()->route('users.edit', $id)
                 ->withErrors($validator)
                 ->withInput();
@@ -166,6 +183,7 @@ class UserListController extends Controller
         // Sync the role (this will remove all other roles and assign the new one)
         $user->syncRoles($request->role);
 
+        log_action('success', "User '{$user->name}' (ID: {$user->id}) updated with role '{$request->role}'.");
         // Redirect with success message
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
@@ -176,11 +194,13 @@ class UserListController extends Controller
 
         // Prevent the authenticated user from deleting their own account
         if (auth()->id() === $id) {
+            log_action('warning', 'User attempted to delete their own account.');
             return redirect()->route('users.index')->with('error', 'You cannot delete your own account.');
         }
 
         // Check if user ID 1 is being accessed by another user
         if ($this->isProtectedUser($id)) {
+            log_action('warning', 'User attempted to delete a protected account (ID: 1).');
             return redirect()->route('users.index')->with('error', 'You cannot delete this account.');
         }
 
@@ -188,6 +208,7 @@ class UserListController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
+        log_action('success', "User '{$user->name}' (ID: {$user->id}) was deleted.");
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
@@ -197,6 +218,7 @@ class UserListController extends Controller
 
         // Check if user ID 1 is being accessed by another user
         if ($this->isProtectedUser($id)) {
+            log_action('warning', 'User attempted to restore a protected account (ID: 1).');
             return redirect()->route('users.index')->with('error', 'You cannot restore this account.');
         }
 
@@ -204,6 +226,7 @@ class UserListController extends Controller
         $user = User::onlyTrashed()->findOrFail($id);
         $user->restore();
 
+        log_action('success', "User '{$user->name}' (ID: {$user->id}) was restored.");
         return redirect()->route('users.index')->with('success', 'User restored successfully.');
     }
 
@@ -213,11 +236,13 @@ class UserListController extends Controller
 
         // Prevent users from accessing their own change-access page
         if (auth()->id() == $id) {
+            log_action('warning', 'User attempted to change their own access.');
             return redirect()->route('users.index')->with('error', 'You cannot change your own access.');
         }
 
         // Check if user ID 1 is being accessed by another user
         if ($this->isProtectedUser($id)) {
+            log_action('warning', 'User attempted to change access for a protected account (ID: 1).');
             return redirect()->route('users.index')->with('error', 'You cannot change access for this account.');
         }
 
@@ -239,6 +264,7 @@ class UserListController extends Controller
 
         // Check if user ID 1 is being accessed by another user
         if ($this->isProtectedUser($id)) {
+            log_action('warning', 'User attempted to update access for a protected account (ID: 1).');
             return redirect()->route('users.index')->with('error', 'You cannot update access for this account.');
         }
 

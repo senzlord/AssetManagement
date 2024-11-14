@@ -12,25 +12,12 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::user(); // Get the currently authenticated user
-        
-        // Define permission groups
-        $userPermissionsList = [
-            'view device data',         
-            'search device data',       
-            'edit device data',         
-            'generate reports',         
-            'edit account',             
-            'modify device count',      
-        ];
 
-        $adminPermissionsList = [
-            'add category',             
-            'add device data',          
-            'delete device data',       
-            'create account',           
-            'delete account',           
-            'manage data access',       
-        ];
+        log_action('info', "User {$user->name} (ID: {$user->id}) accessed their profile page.");
+
+        // Define permission groups
+        $userPermissionsList = config('permissions.user_permissions');
+        $adminPermissionsList = config('permissions.admin_permissions');
 
         // Retrieve all permissions assigned to the user
         $userPermissions = $user->getAllPermissions()->pluck('name');
@@ -50,6 +37,8 @@ class ProfileController extends Controller
 
     public function showChangePasswordForm()
     {
+        log_action('info', 'User accessed the change password form.');
+
         return view('auth.change-password');
     }
 
@@ -72,6 +61,8 @@ class ProfileController extends Controller
         Auth::user()->update([
             'password' => Hash::make($request->new_password),
         ]);
+
+        log_action('success', "User {Auth::user()->name} (ID: {Auth::user()->id}) successfully changed their password.");
 
         return redirect()->route('profile')->with('status', 'Password changed successfully.');
     }

@@ -28,48 +28,68 @@
             <tbody>
                 @foreach($users as $user)
                     @php
-                        // Check if this is the authenticated user's own account
-                        $isSelf = auth()->id() === $user->id;
-                    @endphp
-                    <tr>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->username }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->roles->pluck('name')->implode(', ') }}</td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                @if($user->trashed())
-                                    <!-- Restore Account Button -->
-                                    @can('delete account')
-                                        <form action="{{ route('users.restore', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to restore this user?');">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="btn btn-sm btn-success" {{ $isSelf ? 'disabled' : '' }}>Restore</button>
-                                        </form>
-                                    @endcan
-                                @else
-                                    <!-- Edit Account Button -->
-                                    @can('edit account')
-                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning {{ $isSelf ? 'disabled' : '' }}" {{ $isSelf ? 'tabindex="-1"' : '' }}>Edit</a>
-                                    @endcan                                
+                    // Check if this is the authenticated user's own account
+                    $isSelf = auth()->id() === $user->id;
 
-                                    <!-- Soft Delete Account Button -->
-                                    @can('delete account')
-                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" {{ $isSelf ? 'disabled' : '' }}>Delete</button>
-                                        </form>
-                                    @endcan
+                    // Check if the user has the ID 1 (super admin) or is trying to modify their own account
+                    $isSuperAdmin = $user->id == 1;
+                    $isAdmin = $user->roles->contains('name', 'admin');
+                    $isUser = auth()->user()->roles->contains('name', 'user');
+                @endphp
 
-                                    <!-- Change Access Button -->
-                                    @can('manage data access')
-                                        <a href="{{ route('users.changeAccess', $user->id) }}" class="btn btn-sm btn-secondary {{ $isSelf ? 'disabled' : '' }}" {{ $isSelf ? 'tabindex="-1"' : '' }}>Change Access</a>
-                                    @endcan
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->username }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>{{ $user->roles->pluck('name')->implode(', ') }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            @if($user->trashed())
+                                <!-- Restore Account Button -->
+                                @can('delete account')
+                                    <form action="{{ route('users.restore', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to restore this user?');">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-success"
+                                                {{ $isSelf || $isSuperAdmin || $isUser ? 'disabled' : '' }}>
+                                            Restore
+                                        </button>
+                                    </form>
+                                @endcan
+                            @else
+                                <!-- Edit Account Button -->
+                                @can('edit account')
+                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning
+                                        {{ $isSelf || $isSuperAdmin || ($isUser && $isAdmin) ? 'disabled' : '' }}"
+                                        {{ $isSelf || $isSuperAdmin || ($isUser && $isAdmin) ? 'tabindex="-1"' : '' }}>
+                                        Edit
+                                    </a>
+                                @endcan
+
+                                <!-- Soft Delete Account Button -->
+                                @can('delete account')
+                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                {{ $isSelf || $isSuperAdmin || ($isUser && $isAdmin) ? 'disabled' : '' }}>
+                                            Delete
+                                        </button>
+                                    </form>
+                                @endcan
+
+                                <!-- Change Access Button -->
+                                @can('manage data access')
+                                    <a href="{{ route('users.changeAccess', $user->id) }}" class="btn btn-sm btn-secondary
+                                        {{ $isSelf || $isSuperAdmin || ($isUser && $isAdmin) ? 'disabled' : '' }}"
+                                        {{ $isSelf || $isSuperAdmin || ($isUser && $isAdmin) ? 'tabindex="-1"' : '' }}>
+                                        Change Access
+                                    </a>
+                                @endcan
+                            @endif
+                        </div>
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>

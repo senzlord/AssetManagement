@@ -48,7 +48,7 @@
                     @endcan
                     <!-- Additional Links -->
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-white">Log History</a>
+                        <a href="{{ route('logs.index') }}" class="nav-link text-white">Log History</a>
                     </li>
                 </ul>
             </div>

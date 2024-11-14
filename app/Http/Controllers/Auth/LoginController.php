@@ -42,4 +42,37 @@ class LoginController extends Controller
     {
         return 'username';
     }
+
+    /**
+     * Log the login attempt.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
+    protected function authenticated($request, $user)
+    {
+        // Log the successful login
+        log_action('success', "User '{$user->name}' (ID: {$user->id}) successfully logged in.");
+        return redirect()->intended($this->redirectTo);
+    }
+
+    /**
+     * Log the logout attempt.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logout(\Illuminate\Http\Request $request)
+    {
+        // Log the logout action
+        log_action('info', "User '{$request->user()->name}' (ID: {$request->user()->id}) logged out.");
+
+        // Perform the logout operation
+        $this->guard()->logout();
+
+        // Invalidate the session and regenerate the token
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
 }

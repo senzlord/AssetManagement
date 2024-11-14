@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserListController;
+use App\Http\Controllers\UserLogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +26,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/users/{id}/change-access', [UserListController::class, 'changeAccess'])->name('users.changeAccess');
     Route::post('/users/{id}/update-access', [UserListController::class, 'updateAccess'])->name('users.updateAccess');
+
+    Route::get('/logs', [UserLogController::class, 'index'])->name('logs.index');
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/change-password', [ProfileController::class, 'showChangePasswordForm'])->name('password.change');
