@@ -29,16 +29,17 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY . /var/www/html
 
 # Copy the .env.example file to .env
-COPY .env.example .env
-
-# Generate the application key
-RUN php artisan key:generate
+RUN cp .env.example .env
 
 # Install project dependencies with optimized autoloader
 RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
 
 # Set permissions for Laravel's storage and cache directories
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Generate the application key
+RUN php artisan key:generate
 
 # Expose the port for the Laravel development server
 EXPOSE 8000
