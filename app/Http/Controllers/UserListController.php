@@ -42,7 +42,7 @@ class UserListController extends Controller
 
         // Get all roles for the role selection dropdown
         $roles = Role::all();
-        
+
         return view('users.create', compact('roles'));
     }
 
@@ -56,10 +56,10 @@ class UserListController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'exists:roles,name'],
         ];
-    
+
         // Run the validator
         $validator = Validator::make($request->all(), $rules);
-    
+
         // Check if validation fails
         if ($validator->fails()) {
             return redirect()->route('users.create')
@@ -98,16 +98,76 @@ class UserListController extends Controller
         return redirect()->route('users.index')->with('success', 'User created successfully with assigned role.');
     }
 
-    public function edit(User $user)
+    public function edit($id)
     {
-        $this->authorize('edit account');
+        // Find the user, including soft-deleted users
+        $user = User::withTrashed()->find($id);
 
-        // Check if user ID 1 is being accessed by another user
-        if ($this->isProtectedUser($user->id)) {
-            return redirect()->route('users.index')->with('error', 'You cannot edit this account.');
+        // Check if the user exists and if it's soft-deleted
+        if (!$user) {
+            // If the user does not exist, redirect with an error message
+            return redirect()->route('users.index')
+                ->withErrors(['error' => 'User not found.']);
         }
 
-        return view('users.edit', compact('user'));
+        // If the user is soft-deleted, redirect back with an error message
+        if ($user->trashed()) {
+            return redirect()->route('users.index')
+                ->withErrors(['error' => 'The user has been deleted and cannot be edited.']);
+        }
+
+        // If the user is not deleted, proceed with the normal edit process
+        $roles = Role::all();
+        return view('users.edit', compact('user', 'roles'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validate the request
+        $rules = [
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $id], // Ensure username uniqueness except for current user
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $id], // Ensure email uniqueness except for current user
+            'role' => ['required', 'exists:roles,name'], // Validate the role
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            return redirect()->route('users.edit', $id)
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Find the user
+        $user = User::withTrashed()->find($id);
+
+        // Check if the user exists
+        if (!$user) {
+            return redirect()->route('users.index')
+                ->withErrors(['error' => 'User not found.']);
+        }
+
+        // If the user is trashed (soft-deleted)
+        if ($user->trashed()) {
+            return redirect()->route('users.index')
+                ->withErrors(['error' => 'The user has been deleted and cannot be updated.']);
+        }
+
+        // Update user details, excluding password and permissions
+        $user->name = $request->name;
+        $user->username = $request->username;
+        $user->email = $request->email;
+
+        // Save the updated user details
+        $user->save();
+
+        // Sync the role (this will remove all other roles and assign the new one)
+        $user->syncRoles($request->role);
+
+        // Redirect with success message
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
     public function destroy($id)

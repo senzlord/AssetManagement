@@ -44,12 +44,15 @@ class PermissionsSeeder extends Seeder
         $userRole = Role::firstOrCreate(['name' => 'user']);
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
 
+        $usernameAdmin = 'Admin';
+        $passwordAdmin = 'password123';
+
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@admin.com'],
             [
-                'username' => 'Admin',
+                'username' => $usernameAdmin,
                 'name' => 'Admin User',
-                'password' => Hash::make('password123'), // Change the password after seeding
+                'password' => Hash::make($passwordAdmin), // Change the password after seeding
             ]
         );
 
@@ -64,6 +67,6 @@ class PermissionsSeeder extends Seeder
         }
 
         // Output a message to confirm the admin user creation
-        $this->command->info('Admin user created with permissions successfully.');
+        $this->command->info('Admin user created with permissions successfully. (Username: ' . $usernameAdmin . ', Password: ' . $passwordAdmin . ')');
     }
 }
