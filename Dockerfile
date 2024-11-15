@@ -9,8 +9,9 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
-    libonig-dev \
     libxml2-dev \
+    libonig-dev \
+    libzip-dev \
     zip \
     unzip \
     && apt-get clean
@@ -28,18 +29,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy the application code to the container
 COPY . /var/www/html
 
-# Copy the .env.example file to .env
+# Copy the .env.example to .env (if needed)
 RUN cp .env.example .env
 
-# Install project dependencies with optimized autoloader
+# Install Composer dependencies
 RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
 
 # Set permissions for Laravel's storage and cache directories
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Generate the application key
-RUN php artisan key:generate
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose the port for the Laravel development server
 EXPOSE 2309
