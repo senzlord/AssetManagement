@@ -29,9 +29,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy the application code into the container
 COPY . /var/www/html
 
-# Copy the .env.example to .env (if it doesn't exist)
-RUN cp .env.example .env
-
 # Install Composer dependencies
 RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
 
