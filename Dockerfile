@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libmcrypt-dev \
     libxslt-dev \
-    libsodium-dev 
+    libsodium-dev \  
+    libonig-dev
 
 # Install ekstensi PHP untuk Laravel
 RUN docker-php-ext-install bcmath gd pdo_mysql sodium mbstring xml ctype
