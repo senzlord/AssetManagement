@@ -42,7 +42,7 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 RUN php artisan key:generate
 
 # Expose the port for the Laravel development server
-EXPOSE 8000
+EXPOSE 2309
 
 # Run the Laravel development server by default
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=2309"]
