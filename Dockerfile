@@ -1,7 +1,7 @@
-# Use the official PHP 8.3 image as the base image
-FROM php:8.3
+# Use the official PHP 8.3 image with FPM (FastCGI Process Manager)
+FROM php:8.3-fpm
 
-# Set the working directory inside the container
+# Set working directory inside the container
 WORKDIR /var/www/html
 
 # Install system dependencies
@@ -16,20 +16,20 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && apt-get clean
 
-# Install PHP extensions
+# Install PHP extensions required for Laravel
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Install Node.js and npm (needed for Laravel Mix or Vite assets)
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
-# Install Composer
+# Install Composer globally
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy the application code to the container
+# Copy the application code into the container
 COPY . /var/www/html
 
-# Copy the .env.example to .env (if needed)
+# Copy the .env.example to .env (if it doesn't exist)
 RUN cp .env.example .env
 
 # Install Composer dependencies
@@ -39,8 +39,8 @@ RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoload
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose the port for the Laravel development server
+# Expose port 80 (for web server)
 EXPOSE 2309
 
-# Run the Laravel development server by default
+# Run the Laravel development server (this can be replaced by Nginx or Apache for production)
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=2309"]
