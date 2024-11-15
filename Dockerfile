@@ -1,7 +1,7 @@
-# Use the official PHP 8.3 image with FPM (FastCGI Process Manager)
-FROM php:8.3-fpm
+# Use the official PHP 8.3 image as the base image
+FROM php:8.3
 
-# Set working directory inside the container
+# Set the working directory inside the container
 WORKDIR /var/www/html
 
 # Install system dependencies
@@ -9,35 +9,40 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
-    libxml2-dev \
     libonig-dev \
-    libzip-dev \
+    libxml2-dev \
     zip \
     unzip \
     && apt-get clean
 
-# Install PHP extensions required for Laravel
+# Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Install Node.js and npm (needed for Laravel Mix or Vite assets)
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
-# Install Composer globally
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy the application code into the container
+# Copy the application code to the container
 COPY . /var/www/html
 
-# Install Composer dependencies
+# Copy the .env.example file to .env
+RUN cp .env.example .env
+
+# Install project dependencies with optimized autoloader
 RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
 
 # Set permissions for Laravel's storage and cache directories
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
-    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port 80 (for web server)
+# Generate the application key
+RUN php artisan key:generate
+
+# Expose the port for the Laravel development server
 EXPOSE 2309
 
-# Run the Laravel development server (this can be replaced by Nginx or Apache for production)
+# Run the Laravel development server by default
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=2309"]
