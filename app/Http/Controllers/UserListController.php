@@ -23,10 +23,7 @@ class UserListController extends Controller
     {
         log_action('info', 'User viewed the user list');
 
-        // Check if the user has the "create account" permission
-        if (!Auth::user()->can('create account')) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('create account');
 
         // Retrieve all users to display, including soft-deleted ones
         $users = User::withTrashed()->get();
@@ -39,10 +36,7 @@ class UserListController extends Controller
     {
         log_action('info', 'User accessed the create user form');
 
-        // Ensure user has permission
-        if (!Auth::user()->can('create account')) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('create account');
 
         if (Auth::user()->hasRole('user')) {
             $roles = Role::where('name', 'user')->get(); // Only user role is available for regular users
@@ -56,6 +50,8 @@ class UserListController extends Controller
     // Handle form submission to store a new user
     public function store(Request $request)
     {
+        $this->authorize('create account');
+
         // Check if the authenticated user is an admin
         if (Auth::user()->hasRole('user') && $request->role !== 'user') {
             return redirect()->route('users.index')->with('error', 'You can only create users.');

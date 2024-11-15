@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Custom active class for highlighting */
         .nav-link.active {
@@ -36,7 +37,7 @@
                                 <a href="#" class="nav-link text-white">Non-Hardware</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link text-white">SFP</a>
+                                <a href="{{ route('sfp.index') }}" class="nav-link text-white">SFP</a>
                             </li>
                         </ul>
                     </li>

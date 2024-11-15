@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserListController;
 use App\Http\Controllers\UserLogController;
+use App\Http\Controllers\PerangkatController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,6 +32,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/change-password', [ProfileController::class, 'showChangePasswordForm'])->name('password.change');
-    Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('password.update');
+    Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('password.update.submit');
 
+    Route::get('/sfp', [PerangkatController::class, 'sfpIndex'])->name('sfp.index');
+    Route::get('/sfp/export', [PerangkatController::class, 'exportSfp'])->name('sfp.export');
+    Route::get('/sfp/create', [PerangkatController::class, 'createSfp'])->name('sfp.create');
+    Route::post('/sfp', [PerangkatController::class, 'storeSfp'])->name('sfp.store');
 });
