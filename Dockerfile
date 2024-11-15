@@ -14,11 +14,12 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libmcrypt-dev \
     libxslt-dev \
-    libsodium-dev \  
-    libonig-dev
+    libsodium-dev \    
+    libonig-dev \      
+    libzip-dev
 
 # Install ekstensi PHP untuk Laravel
-RUN docker-php-ext-install bcmath gd pdo_mysql sodium mbstring xml ctype
+RUN docker-php-ext-install bcmath gd pdo_mysql sodium mbstring xml ctype zip
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
