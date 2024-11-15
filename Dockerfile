@@ -9,8 +9,9 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
-    libonig-dev \
     libxml2-dev \
+    libonig-dev \
+    libzip-dev \
     zip \
     unzip \
     && apt-get clean
@@ -28,30 +29,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy the application code into the container
 COPY . /var/www/html
 
-<<<<<<< HEAD
 # Install Composer dependencies
-=======
-# Copy the .env.example file to .env
-RUN cp .env.example .env
-
-# Install project dependencies with optimized autoloader
->>>>>>> parent of 4706127 (Update Dockerfile)
 RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
 
 # Set permissions for Laravel's storage and cache directories
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Generate the application key
-RUN php artisan key:generate
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80 (for web server)
 EXPOSE 2309
 
-<<<<<<< HEAD
 # Run the Laravel development server (this can be replaced by Nginx or Apache for production)
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=2309"]
-=======
-# Run the Laravel development server by default
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=2309"]
->>>>>>> parent of 4706127 (Update Dockerfile)
