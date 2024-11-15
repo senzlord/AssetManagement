@@ -3,6 +3,7 @@ FROM php:8.2-fpm
 
 # Install dependensi yang dibutuhkan
 RUN apt-get update && apt-get install -y \
+    nano \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -35,6 +36,9 @@ RUN composer install --no-interaction --optimize-autoloader
 
 # Berikan izin ke direktori storage
 RUN chmod -R 775 storage bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+RUN php artisan key:generate
 
 # Ekspose port yang digunakan oleh PHP-FPM
 EXPOSE 9000
