@@ -1,48 +1,29 @@
-# Use the official PHP 8.3 image as the base image
-FROM php:8.3
+# Gunakan PHP 8.2
+FROM php:8.2-fpm
 
-# Set the working directory inside the container
-WORKDIR /var/www/html
-
-# Install system dependencies
+# Install dependensi yang dibutuhkan
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
     libpng-dev \
-    libonig-dev \
-    libxml2-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     zip \
     unzip \
-    && apt-get clean
+    git \
+    curl
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
-
-# Install Node.js and npm (needed for Laravel Mix or Vite assets)
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
+# Install ekstensi PHP untuk Laravel
+RUN docker-php-ext-install pdo_mysql gd bcmath
 
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Copy the application code to the container
-COPY . /var/www/html
+# Set direktori kerja
+WORKDIR /var/www
 
-# Copy the .env.example file to .env
-RUN cp .env.example .env
+# Salin file proyek
+COPY . .
 
-# Install project dependencies with optimized autoloader
-RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
+# Berikan izin ke direktori storage
+RUN chmod -R 775 storage bootstrap/cache
 
-# Set permissions for Laravel's storage and cache directories
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Generate the application key
-RUN php artisan key:generate
-
-# Expose the port for the Laravel development server
-EXPOSE 2309
-
-# Run the Laravel development server by default
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=2309"]
+EXPOSE 9000
