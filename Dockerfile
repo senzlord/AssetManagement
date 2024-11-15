@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libicu-dev \
     libmcrypt-dev \
-    libxslt-dev
+    libxslt-dev \
+    libsodium-dev 
 
 # Install ekstensi PHP untuk Laravel
 RUN docker-php-ext-install bcmath gd pdo_mysql sodium mbstring xml ctype
@@ -33,4 +34,5 @@ RUN composer install --no-interaction --optimize-autoloader
 # Berikan izin ke direktori storage
 RUN chmod -R 775 storage bootstrap/cache
 
+# Ekspose port yang digunakan oleh PHP-FPM
 EXPOSE 9000
