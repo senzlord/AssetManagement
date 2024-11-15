@@ -9,10 +9,14 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    curl
+    curl \
+    libxml2-dev \
+    libicu-dev \
+    libmcrypt-dev \
+    libxslt-dev
 
 # Install ekstensi PHP untuk Laravel
-RUN docker-php-ext-install bcmath gd pdo_mysql sodium
+RUN docker-php-ext-install bcmath gd pdo_mysql sodium mbstring xml ctype
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
@@ -22,6 +26,9 @@ WORKDIR /var/www
 
 # Salin file proyek
 COPY . .
+
+# Install Laravel dependencies
+RUN composer install --no-interaction --optimize-autoloader
 
 # Berikan izin ke direktori storage
 RUN chmod -R 775 storage bootstrap/cache
