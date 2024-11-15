@@ -1,48 +1,43 @@
-# Use the official PHP 8.3 image as the base image
-FROM php:8.3
+# Use PHP 8.3 FPM with Alpine
+FROM php:8.3-cli-alpine as base
 
-# Set the working directory inside the container
-WORKDIR /var/www/html
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install system dependencies and PHP extensions
+RUN apk add --no-cache \
+    bash \
     git \
     curl \
     libpng-dev \
-    libonig-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev \
+    zlib-dev \
+    libxpm-dev \
     libxml2-dev \
-    zip \
-    unzip \
-    && apt-get clean
+    oniguruma-dev \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install gd opcache pdo pdo_mysql xml zip \
+    && apk del .build-deps
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# Set the working directory in the container
+WORKDIR /var/www
 
-# Install Node.js and npm (needed for Laravel Mix or Vite assets)
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
+# Install Composer globally
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Copy application files
+COPY . .
 
-# Copy the application code to the container
-COPY . /var/www/html
+# Install PHP dependencies with Composer
+RUN composer install --no-interaction --prefer-dist
 
-# Copy the .env.example file to .env
-RUN cp .env.example .env
+# Set up file permissions for Laravel
+RUN chown -R www-data:www-data /var/www && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Install project dependencies with optimized autoloader
-RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
+# Expose the port for the PHP built-in server
+EXPOSE 8000
 
-# Set permissions for Laravel's storage and cache directories
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Generate the application key
-RUN php artisan key:generate
-
-# Expose the port for the Laravel development server
-EXPOSE 2309
-
-# Run the Laravel development server by default
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=2309"]
+# Command to run the PHP built-in server (Laravel default port)
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
