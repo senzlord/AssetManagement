@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     curl
 
 # Install ekstensi PHP untuk Laravel
-RUN docker-php-ext-install pdo_mysql gd bcmath
+RUN docker-php-ext-install bcmath gd pdo_mysql sodium
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
