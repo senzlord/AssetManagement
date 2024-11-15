@@ -1,43 +1,48 @@
-# Use PHP 8.3 FPM with Alpine
-FROM php:8.3-cli-alpine as base
+# Use the official PHP 8.3 image as the base image
+FROM php:8.3
 
-# Install system dependencies and PHP extensions
-RUN apk add --no-cache \
-    bash \
+# Set the working directory inside the container
+WORKDIR /var/www/html
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
-    libjpeg-turbo-dev \
-    libwebp-dev \
-    zlib-dev \
-    libxpm-dev \
+    libonig-dev \
     libxml2-dev \
-    oniguruma-dev \
-    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install gd opcache pdo pdo_mysql xml zip \
-    && apk del .build-deps
+    zip \
+    unzip \
+    && apt-get clean
 
-# Set the working directory in the container
-WORKDIR /var/www
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Install Composer globally
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Install Node.js and npm (needed for Laravel Mix or Vite assets)
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
 
-# Copy application files
-COPY . .
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install PHP dependencies with Composer
-RUN composer install --no-interaction --prefer-dist
+# Copy the application code to the container
+COPY . /var/www/html
 
-# Set up file permissions for Laravel
-RUN chown -R www-data:www-data /var/www && \
-    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+# Copy the .env.example file to .env
+RUN cp .env.example .env
 
-# Expose the port for the PHP built-in server
-EXPOSE 8000
+# Install project dependencies with optimized autoloader
+RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
 
-# Command to run the PHP built-in server (Laravel default port)
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Set permissions for Laravel's storage and cache directories
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Generate the application key
+RUN php artisan key:generate
+
+# Expose the port for the Laravel development server
+EXPOSE 2309
+
+# Run the Laravel development server by default
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=2309"]
