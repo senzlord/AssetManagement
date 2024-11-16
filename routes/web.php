@@ -38,4 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sfp/export', [PerangkatController::class, 'exportSfp'])->name('sfp.export');
     Route::get('/sfp/create', [PerangkatController::class, 'createSfp'])->name('sfp.create');
     Route::post('/sfp', [PerangkatController::class, 'storeSfp'])->name('sfp.store');
+    Route::get('/sfp/{id}', [PerangkatController::class, 'showSfp'])->name('sfp.show');
+    Route::get('/sfp/{id}/edit', [PerangkatController::class, 'editSfp'])->name('sfp.edit');
+    Route::put('/sfp/{id}', [PerangkatController::class, 'updateSfp'])->name('sfp.update');
 });

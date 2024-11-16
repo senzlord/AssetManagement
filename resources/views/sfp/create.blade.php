@@ -2,7 +2,14 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4" style="color: #0d6efd;">Tambah Perangkat</h2>
+    <!-- Display success or error alerts using the Alert component -->
+    <x-alert type="success" :message="session('success')" />
+    <x-alert type="danger" :message="session('error')" />
+
+    <!-- Flex container for heading and button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Tambah Perangkat SFP</h1>
+    </div>
     
     <form action="{{ route('sfp.store') }}" method="POST">
         @csrf

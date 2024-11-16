@@ -7,10 +7,9 @@
     <div class="card">
         <div class="card-header">Add User and Assign Role</div>
         <div class="card-body">
-            <!-- Display success or error messages -->
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
+            <!-- Display success or error alerts using the Alert component -->
+            <x-alert type="success" :message="session('success')" />
+            <x-alert type="danger" :message="session('error')" />
 
             <form method="POST" action="{{ route('users.store') }}">
                 @csrf

@@ -2,6 +2,15 @@
 
 @section('content')
 <div class="container">
+    <!-- Display success or error alerts using the Alert component -->
+    <x-alert type="success" :message="session('success')" />
+    <x-alert type="danger" :message="session('error')" />
+
+    <!-- Flex container for heading and button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Perangkat SFP</h1>
+    </div>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <form action="{{ route('sfp.index') }}" method="GET" class="d-flex">
             <input type="text" class="form-control me-2" placeholder="Hostname/Brand/Serial Number..." name="search" value="{{ request('search') }}">
@@ -27,6 +36,7 @@
                 <th>Hostname</th>
                 <th>IP Address</th>
                 <th>Jumlah SFP Dicabut</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -39,6 +49,11 @@
                 <td>{{ $sfp->HOST_NAME }}</td>
                 <td>{{ $sfp->IP_ADDRESS }}</td>
                 <td>{{ $sfp->JUMLAH_SFP_DICABUT }}</td>
+                <td>
+                    <a href="{{ route('sfp.show', $sfp->PERANGKAT_ID) }}" class="btn btn-sm btn-info">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                </td>
             </tr>
             @endforeach
         </tbody>
