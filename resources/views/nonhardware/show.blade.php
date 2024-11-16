@@ -8,15 +8,15 @@
 
     <!-- Heading -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Detail Perangkat Hardware</h1>
+        <h1>Detail Perangkat Non-Hardware</h1>
         <div>
             <div class="d-flex justify-content-end mt-3">
             @can('edit device data')
-                <a href="{{ route('hardware.edit', $hardware->PERANGKAT_ID) }}" class="btn btn-success me-2">
+                <a href="{{ route('nonhardware.edit', $hardware->PERANGKAT_ID) }}" class="btn btn-success me-2">
                     <i class="fas fa-edit"></i> Edit Perangkat
                 </a>
             @endcan
-                <a href="{{ route('hardware.index') }}" class="btn btn-secondary">
+                <a href="{{ route('nonhardware.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
             </div>
@@ -64,28 +64,17 @@
         </tbody>
     </table>
 
-    <!-- Hardware Section -->
-    <h4 class="mt-4">Hardware</h4>
-    <table class="table table-bordered">
-        <tbody>
-            <tr>
-                <td style="width: 25%; background-color: #f8f9fa;"><strong>End-of-Support</strong></td>
-                <td id="eos_hardware_date">{{ $hardware->EOS_HARDWARE ? $hardware->EOS_HARDWARE->format('Y-m-d') : '-' }}</td>
-            </tr>
-            <tr>
-                <td style="background-color: #f8f9fa;"><strong>Time Left (Days)</strong></td>
-                <td id="eos_hardware_time_left"></td>
-            </tr>
-        </tbody>
-    </table>
-
     <!-- Firmware / OS Section -->
     <h4 class="mt-4">Firmware / OS</h4>
     <table class="table table-bordered">
         <tbody>
             <tr>
-                <td style="width: 25%; background-color: #f8f9fa;"><strong>Version</strong></td>
+                <td style="width: 25%; background-color: #f8f9fa;"><strong>FIRMWARE Version</strong></td>
                 <td>{{ $hardware->FIRMWARE }}</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; background-color: #f8f9fa;"><strong>OS Version</strong></td>
+                <td>{{ $hardware->OS_VERSION }}</td>
             </tr>
             <tr>
                 <td style="background-color: #f8f9fa;"><strong>End-of-Support</strong></td>
@@ -166,7 +155,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        calculateTimeLeft('eos_hardware_date', 'eos_hardware_time_left');
         calculateTimeLeft('eos_firmware_date', 'eos_firmware_time_left');
         calculateTimeLeft('licence_end_date', 'licence_time_left');
         calculateTimeLeft('ats_end_date', 'ats_time_left');

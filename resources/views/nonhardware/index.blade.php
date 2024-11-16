@@ -8,16 +8,16 @@
 
     <!-- Flex container for heading and buttons -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Hardware</h1>
+        <h1>Non-Hardware</h1>
         <div>
             <!-- Kategori Button -->
             <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#kategoriModal">
                 <i class="fas fa-list"></i> Kategori
             </button>
-            <a href="{{ route('hardware.create') }}" class="btn btn-primary me-2">
+            <a href="{{ route('nonhardware.create') }}" class="btn btn-primary me-2">
                 <i class="fas fa-plus"></i> Perangkat
             </a>
-            <button class="btn btn-primary" onclick="window.location='{{ route('hardware.export') }}'">
+            <button class="btn btn-primary" onclick="window.location='{{ route('nonhardware.export') }}'">
                 Export ke Excel
             </button>
         </div>
@@ -25,7 +25,7 @@
 
     <!-- Search bar -->
     <div class="mb-3">
-        <form action="{{ route('hardware.index') }}" method="GET" class="d-flex">
+        <form action="{{ route('nonhardware.index') }}" method="GET" class="d-flex">
             <input type="text" class="form-control me-2" placeholder="Hostname/Brand/Serial Number/Kategori..." name="search" value="{{ request('search') }}">
             <button type="submit" class="btn btn-secondary">
                 <i class="fas fa-search"></i> Search
@@ -41,8 +41,8 @@
                 <th>Hostname</th>
                 <th>Kategori</th>
                 <th>Serial Number</th>
-                <th>IP Address</th>
                 <th>Lokasi Perangkat</th>
+                <th>License End Date</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -53,10 +53,10 @@
                 <td>{{ $hardware->HOST_NAME }}</td>
                 <td>{{ $hardware->CATEGORY }}</td>
                 <td>{{ $hardware->SERIAL_NUMBER }}</td>
-                <td>{{ $hardware->IP_ADDRESS }}</td>
                 <td>{{ $hardware->LOCATION }}</td>
+                <td>{{ $hardware->LICENCE_END_DATE }}</td>
                 <td>
-                    <a href="{{ route('hardware.show', $hardware->PERANGKAT_ID) }}" class="btn btn-sm btn-info">
+                    <a href="{{ route('nonhardware.show', $hardware->PERANGKAT_ID) }}" class="btn btn-sm btn-info">
                         <i class="fas fa-eye"></i> View
                     </a>
                 </td>
@@ -95,10 +95,10 @@
                         @endforeach
                     </ul>
                 @endif
-                <form action="{{ route('hardware.category.store') }}" method="POST" class="d-flex align-items-center">
+                <form action="{{ route('nonhardware.category.store') }}" method="POST" class="d-flex align-items-center">
                     @csrf
                     <input type="text" name="name" class="form-control me-2" placeholder="Kategori Baru..." required>
-                    <input type="hidden" name="type" value="Hardware">
+                    <input type="hidden" name="type" value="Non-Hardware">
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-plus"></i>
                     </button>

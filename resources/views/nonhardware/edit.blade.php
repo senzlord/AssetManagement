@@ -8,10 +8,10 @@
 
     <!-- Heading -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Edit Perangkat Hardware</h1>
+        <h1>Edit Perangkat Non-Hardware</h1>
     </div>
 
-    <form action="{{ route('hardware.update', $hardware->PERANGKAT_ID) }}" method="POST">
+    <form action="{{ route('nonhardware.update', $hardware->PERANGKAT_ID) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -20,7 +20,7 @@
             <button type="submit" class="btn btn-primary me-2">
                 <i class="fas fa-save"></i> Simpan Perubahan
             </button>
-            <a href="{{ route('hardware.index') }}" class="btn btn-danger">
+            <a href="{{ route('nonhardware.index') }}" class="btn btn-danger">
                 <i class="fas fa-times"></i> Batal
             </a>
         </div>
@@ -28,7 +28,7 @@
         <table class="table table-bordered">
             <tbody>
                 <tr>
-                    <td style="width: 25%; background-color: #f8f9fa;"><strong>ID PERANGKAT</strong></td>
+                    <td style="width: 25%; background-color: #f8f9fa;"><strong>ID Perangkat</strong></td>
                     <td>
                         <input type="text" class="form-control" value="{{ $hardware->PERANGKAT_ID }}" disabled>
                     </td>
@@ -36,44 +36,40 @@
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>Hostname</strong></td>
                     <td>
-                        <input type="text" class="form-control" name="HOST_NAME" placeholder="Hostname..." value="{{ old('HOST_NAME', $hardware->HOST_NAME) }}" required>
+                        <input type="text" class="form-control @error('HOST_NAME') is-invalid @enderror" name="HOST_NAME" placeholder="Hostname..." value="{{ old('HOST_NAME', $hardware->HOST_NAME) }}" required>
+                        @error('HOST_NAME')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>Brand</strong></td>
                     <td>
-                        <input type="text" class="form-control" name="BRAND" placeholder="Brand..." value="{{ old('BRAND', $hardware->BRAND) }}" required>
+                        <input type="text" class="form-control @error('BRAND') is-invalid @enderror" name="BRAND" placeholder="Brand..." value="{{ old('BRAND', $hardware->BRAND) }}" required>
+                        @error('BRAND')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>Kategori</strong></td>
                     <td>
-                        <select class="form-control" name="CATEGORY" required>
+                        <select class="form-control @error('CATEGORY') is-invalid @enderror" name="CATEGORY" required>
                             <option value="">Pilih Kategori</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->name }}" {{ old('CATEGORY', $hardware->CATEGORY) == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
                         </select>
+                        @error('CATEGORY')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>Serial Number</strong></td>
                     <td>
-                        <input type="text" class="form-control" name="SERIAL_NUMBER" placeholder="Serial Number..." value="{{ old('SERIAL_NUMBER', $hardware->SERIAL_NUMBER) }}" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="background-color: #f8f9fa;"><strong>IP Address</strong></td>
-                    <td>
-                        <input 
-                            type="text" 
-                            class="form-control @error('IP_ADDRESS') is-invalid @enderror" 
-                            name="IP_ADDRESS" 
-                            value="{{ old('IP_ADDRESS', $hardware->IP_ADDRESS) }}" 
-                            pattern="^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$"
-                            title="Enter a valid IP address (e.g., 192.168.0.1)" 
-                            required>
-                        @error('IP_ADDRESS')
+                        <input type="text" class="form-control @error('SERIAL_NUMBER') is-invalid @enderror" name="SERIAL_NUMBER" placeholder="Serial Number..." value="{{ old('SERIAL_NUMBER', $hardware->SERIAL_NUMBER) }}" required>
+                        @error('SERIAL_NUMBER')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
                     </td>
@@ -81,57 +77,62 @@
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>Lokasi Perangkat</strong></td>
                     <td>
-                        <input type="text" class="form-control" name="LOCATION" placeholder="Lokasi Perangkat..." value="{{ old('LOCATION', $hardware->LOCATION) }}" required>
+                        <input type="text" class="form-control @error('LOCATION') is-invalid @enderror" name="LOCATION" placeholder="Lokasi Perangkat..." value="{{ old('LOCATION', $hardware->LOCATION) }}" required>
+                        @error('LOCATION')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>PIC</strong></td>
                     <td>
-                        <input type="text" class="form-control" name="USER" placeholder="User..." value="{{ old('USER', $hardware->USER) }}" required>
+                        <input type="text" class="form-control @error('USER') is-invalid @enderror" name="USER" placeholder="User..." value="{{ old('USER', $hardware->USER) }}" required>
+                        @error('USER')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>Vendor</strong></td>
                     <td>
-                        <input type="text" class="form-control" name="VENDOR" placeholder="Vendor..." value="{{ old('VENDOR', $hardware->VENDOR) }}" required>
+                        <input type="text" class="form-control @error('VENDOR') is-invalid @enderror" name="VENDOR" placeholder="Vendor..." value="{{ old('VENDOR', $hardware->VENDOR) }}" required>
+                        @error('VENDOR')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
             </tbody>
         </table>
-        
-        <!-- Hardware Section -->
-        <h4 class="mt-4">Hardware</h4>
-        <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <td style="width: 25%; background-color: #f8f9fa;"><strong>End-of-Support</strong></td>
-                    <td>
-                        <input type="date" class="form-control" name="EOS_HARDWARE" id="eos_hardware" value="{{ old('EOS_HARDWARE', optional($hardware->EOS_HARDWARE)->format('Y-m-d')) }}">
-                    </td>
-                </tr>
-                <tr>
-                    <td style="background-color: #f8f9fa;"><strong>Time Left (Days)</strong></td>
-                    <td>
-                        <input type="text" class="form-control" id="hardware_time_left" placeholder="Calculated automatically..." disabled>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        
+    
         <!-- Firmware / OS Section -->
         <h4 class="mt-4">Firmware / OS</h4>
         <table class="table table-bordered">
             <tbody>
                 <tr>
-                    <td style="width: 25%; background-color: #f8f9fa;"><strong>Version</strong></td>
+                    <td style="width: 25%; background-color: #f8f9fa;"><strong>Firmware Version</strong></td>
                     <td>
-                        <input type="text" class="form-control" name="FIRMWARE" placeholder="Version..." value="{{ old('FIRMWARE', $hardware->FIRMWARE) }}" required>
+                        <input type="text" class="form-control @error('FIRMWARE') is-invalid @enderror" name="FIRMWARE" placeholder="Version..." value="{{ old('FIRMWARE', $hardware->FIRMWARE) }}" required>
+                        @error('FIRMWARE')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f8f9fa;"><strong>OS Version</strong></td>
+                    <td>
+                        <input type="text" class="form-control @error('OS_VERSION') is-invalid @enderror" name="OS_VERSION" placeholder="Version..." value="{{ old('OS_VERSION', $hardware->OS_VERSION) }}" required>
+                        @error('OS_VERSION')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>End-of-Support</strong></td>
                     <td>
-                        <input type="date" class="form-control" name="EOS_FIRMWARE" id="eos_firmware" value="{{ old('EOS_FIRMWARE', optional($hardware->EOS_FIRMWARE)->format('Y-m-d')) }}">
+                        <input type="date" class="form-control @error('EOS_FIRMWARE') is-invalid @enderror" name="EOS_FIRMWARE" id="eos_firmware" value="{{ old('EOS_FIRMWARE', $hardware->EOS_FIRMWARE) }}">
+                        @error('EOS_FIRMWARE')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
@@ -142,7 +143,7 @@
                 </tr>
             </tbody>
         </table>
-        
+    
         <!-- Licenses Section -->
         <h4 class="mt-4">Licenses</h4>
         <table class="table table-bordered">
@@ -150,7 +151,10 @@
                 <tr>
                     <td style="width: 25%; background-color: #f8f9fa;"><strong>End Date</strong></td>
                     <td>
-                        <input type="date" class="form-control" name="LICENCE_END_DATE" id="licence_end_date" value="{{ old('LICENCE_END_DATE', optional($hardware->LICENCE_END_DATE)->format('Y-m-d')) }}">
+                        <input type="date" class="form-control @error('LICENCE_END_DATE') is-invalid @enderror" name="LICENCE_END_DATE" id="licence_end_date" value="{{ old('LICENCE_END_DATE', $hardware->LICENCE_END_DATE) }}">
+                        @error('LICENCE_END_DATE')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
@@ -161,7 +165,7 @@
                 </tr>
             </tbody>
         </table>
-        
+    
         <!-- Kontrak / ATS Section -->
         <h4 class="mt-4">Kontrak / ATS</h4>
         <table class="table table-bordered">
@@ -169,40 +173,47 @@
                 <tr>
                     <td style="width: 25%; background-color: #f8f9fa;"><strong>Nama Kontrak</strong></td>
                     <td>
-                        <input type="text" class="form-control" name="NAMA_KONTRAK" placeholder="Nama..." value="{{ old('NAMA_KONTRAK', $hardware->NAMA_KONTRAK) }}" required>
+                        <input type="text" class="form-control @error('NAMA_KONTRAK') is-invalid @enderror" name="NAMA_KONTRAK" placeholder="Nama..." value="{{ old('NAMA_KONTRAK', $hardware->NAMA_KONTRAK) }}" required>
+                        @error('NAMA_KONTRAK')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>No Kontrak</strong></td>
                     <td>
-                        <input type="text" class="form-control" name="NO_KONTRAK" placeholder="No..." value="{{ old('NO_KONTRAK', $hardware->NO_KONTRAK) }}" required>
+                        <input type="text" class="form-control @error('NO_KONTRAK') is-invalid @enderror" name="NO_KONTRAK" placeholder="No..." value="{{ old('NO_KONTRAK', $hardware->NO_KONTRAK) }}" required>
+                        @error('NO_KONTRAK')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>Status Support</strong></td>
                     <td>
-                        <select class="form-control" name="STATUS_SUPPORT" required>
+                        <select class="form-control @error('STATUS_SUPPORT') is-invalid @enderror" name="STATUS_SUPPORT" required>
+                            <option value="">Pilih Status Support</option>
                             <option value="Support" {{ old('STATUS_SUPPORT', $hardware->STATUS_SUPPORT) == 'Support' ? 'selected' : '' }}>Support</option>
                             <option value="Tidak Support" {{ old('STATUS_SUPPORT', $hardware->STATUS_SUPPORT) == 'Tidak Support' ? 'selected' : '' }}>Tidak Support</option>
                         </select>
+                        @error('STATUS_SUPPORT')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 25%; background-color: #f8f9fa;"><strong>End Date</strong></td>
+                    <td style="background-color: #f8f9fa;"><strong>End Date</strong></td>
                     <td>
-                        <input type="date" class="form-control" name="ATS_END_DATE" id="ats_end_date" value="{{ old('ATS_END_DATE', optional($hardware->ATS_END_DATE)->format('Y-m-d')) }}">
+                        <input type="date" class="form-control @error('ATS_END_DATE') is-invalid @enderror" name="ATS_END_DATE" id="ats_end_date" value="{{ old('ATS_END_DATE', $hardware->ATS_END_DATE) }}">
+                        @error('ATS_END_DATE')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>Time Left (Days)</strong></td>
                     <td>
                         <input type="text" class="form-control" id="ats_time_left" placeholder="Calculated automatically..." disabled>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="background-color: #f8f9fa;"><strong>PIC</strong></td>
-                    <td>
-                        <input type="text" class="form-control" name="PIC" placeholder="PIC..." value="{{ old('PIC', $hardware->PIC) }}" required>
                     </td>
                 </tr>
             </tbody>
@@ -221,13 +232,9 @@
             const daysLeft = endDate.diff(currentDate, 'days');
             document.getElementById(outputId).value = daysLeft >= 0 ? `${daysLeft} Days` : "Expired";
         } else {
-            document.getElementById(outputId).value = "-";
+            document.getElementById(outputId).value = "";
         }
     }
-
-    document.getElementById('eos_hardware').addEventListener('change', function() {
-        calculateTimeLeft('eos_hardware', 'hardware_time_left');
-    });
 
     document.getElementById('eos_firmware').addEventListener('change', function() {
         calculateTimeLeft('eos_firmware', 'firmware_time_left');
@@ -240,11 +247,5 @@
     document.getElementById('ats_end_date').addEventListener('change', function() {
         calculateTimeLeft('ats_end_date', 'ats_time_left');
     });
-
-    // Trigger initial calculation for existing data
-    calculateTimeLeft('eos_hardware', 'hardware_time_left');
-    calculateTimeLeft('eos_firmware', 'firmware_time_left');
-    calculateTimeLeft('licence_end_date', 'license_time_left');
-    calculateTimeLeft('ats_end_date', 'ats_time_left');
 </script>
 @endsection

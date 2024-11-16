@@ -29,6 +29,12 @@
         <table class="table table-bordered">
             <tbody>
                 <tr>
+                    <td style="width: 25%; background-color: #f8f9fa;"><strong>ID Perangkat</strong></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{ $sfp->PERANGKAT_ID }}" disabled>
+                    </td>
+                </tr>
+                <tr>
                     <td style="width: 25%; background-color: #f8f9fa;"><strong>Location</strong></td>
                     <td>
                         <input type="text" class="form-control @error('LOCATION') is-invalid @enderror" name="LOCATION" value="{{ old('LOCATION', $sfp->LOCATION) }}" required>

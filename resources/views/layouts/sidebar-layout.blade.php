@@ -35,7 +35,7 @@
                                 <a href="{{ route('hardware.index') }}" class="nav-link text-white">Hardware</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link text-white">Non-Hardware</a>
+                                <a href="{{ route('nonhardware.index') }}" class="nav-link text-white">Non-Hardware</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('sfp.index') }}" class="nav-link text-white">SFP</a>

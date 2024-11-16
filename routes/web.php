@@ -7,9 +7,10 @@ use App\Http\Controllers\UserListController;
 use App\Http\Controllers\UserLogController;
 use App\Http\Controllers\SFPController;
 use App\Http\Controllers\HardwareController;
+use App\Http\Controllers\NonHardwareController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Auth::routes(['register' => false]);
@@ -55,5 +56,17 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{id}', [HardwareController::class, 'update'])->name('hardware.update');
 
         Route::post('/category', [HardwareController::class, 'storeCategory'])->name('hardware.category.store');
+    });
+
+    Route::prefix('nonhardware')->group(function () {
+        Route::get('/', [NonHardwareController::class, 'index'])->name('nonhardware.index');
+        Route::get('/export', [NonHardwareController::class, 'export'])->name('nonhardware.export');
+        Route::get('/create', [NonHardwareController::class, 'create'])->name('nonhardware.create');
+        Route::post('/', [NonHardwareController::class, 'store'])->name('nonhardware.store');
+        Route::get('/{id}', [NonHardwareController::class, 'show'])->name('nonhardware.show');
+        Route::get('/{id}/edit', [NonHardwareController::class, 'edit'])->name('nonhardware.edit');
+        Route::put('/{id}', [NonHardwareController::class, 'update'])->name('nonhardware.update');
+
+        Route::post('/category', [NonHardwareController::class, 'storeCategory'])->name('nonhardware.category.store');
     });
 });
