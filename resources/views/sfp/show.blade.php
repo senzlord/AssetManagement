@@ -9,11 +9,18 @@
     <!-- Flex container for heading and button -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Detail Perangkat SFP</h1>
-        @can('edit device data')
-            <a href="{{ route('sfp.edit', $sfp->PERANGKAT_ID) }}" class="btn btn-success me-2">
-                Edit Perangkat
-            </a>
-        @endcan
+        <div>
+            <div class="d-flex justify-content-end mt-3">
+            @can('edit device data')
+                <a href="{{ route('sfp.edit', $sfp->PERANGKAT_ID) }}" class="btn btn-success me-2">
+                    <i class="fas fa-edit"></i> Edit Perangkat
+                </a>
+            @endcan
+                <a href="{{ route('sfp.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
     </div>
 
     <div class="card">
@@ -48,17 +55,11 @@
                         <td>{{ $sfp->IP_ADDRESS }}</td>
                     </tr>
                     <tr>
-                        <td style="background-color: #f8f9fa;"><strong>Jumlah SFP Dicabut</strong></td>
+                        <td style="background-color: #f8f9fa;"><strong>Jumlah SFP Tersedia</strong></td>
                         <td>{{ $sfp->JUMLAH_SFP_DICABUT }}</td>
                     </tr>
                 </tbody>
             </table>
-
-            <div class="d-flex justify-content-end mt-3">
-                <a href="{{ route('sfp.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
-                </a>
-            </div>
         </div>
     </div>
 </div>

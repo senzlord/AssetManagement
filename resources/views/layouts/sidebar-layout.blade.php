@@ -14,6 +14,7 @@
             font-weight: bold;
         }
     </style>
+    @yield('css')
 </head>
 <body>
     <div class="d-flex">
@@ -31,7 +32,7 @@
                         <span class="nav-link text-white">Perangkat</span>
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a href="#" class="nav-link text-white">Hardware</a>
+                                <a href="{{ route('hardware.index') }}" class="nav-link text-white">Hardware</a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link text-white">Non-Hardware</a>
@@ -94,7 +95,7 @@
     <!-- Bootstrap JS and Popper.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script>
         // Get all sidebar links
         document.querySelectorAll('#sidebar .nav-link').forEach(link => {
@@ -104,5 +105,6 @@
             }
         });
     </script>
+    @yield('script')
 </body>
 </html>

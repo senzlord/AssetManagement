@@ -23,17 +23,24 @@ class Perangkat extends Model
 
     // Allow mass assignment on these fields
     protected $fillable = [
-        'NAME', 'HOST_NAME', 'TYPE', 'SERIAL_NUMBER', 'IP_ADDRESS', 'LOCATION',
+        'HOST_NAME', 'TYPE', 'SERIAL_NUMBER', 'IP_ADDRESS', 'LOCATION',
         'LICENCE_END_DATE', 'PRODUCT_ID_DEVICE', 'JUMLAH_SFP_DICABUT', 'STOCK', 
         'CATEGORY', 'VENDOR', 'TANGGAL_CABUT_SFP', 'BRAND', 'EOS_HARDWARE', 
         'EOS_HARDWARE_RISK', 'FIRMWARE', 'EOS_FIRMWARE', 'EOS_FIRMWARE_RISK', 
-        'LICENSE_END_RISK', 'USER', 'NO_ASSET', 'NAMA_KONTRAK', 'ATS', 
+        'LICENSE_END_RISK', 'USER', 'NO_ASSET', 'NAMA_KONTRAK', 'NO_KONTRAK', 
         'STATUS_SUPPORT', 'ATS_END_DATE', 'PIC', 'OS_VERSION',
     ];
 
     // Specify date fields to be automatically cast to Carbon instances
     protected $dates = [
         'LICENCE_END_DATE', 'EOS_HARDWARE', 'EOS_FIRMWARE', 'ATS_END_DATE',
+    ];
+
+    protected $casts = [
+        'EOS_HARDWARE' => 'datetime',
+        'EOS_FIRMWARE' => 'datetime',
+        'LICENCE_END_DATE' => 'datetime',
+        'ATS_END_DATE' => 'datetime',
     ];
 
     /**

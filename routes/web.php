@@ -5,7 +5,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserListController;
 use App\Http\Controllers\UserLogController;
-use App\Http\Controllers\PerangkatController;
+use App\Http\Controllers\SFPController;
+use App\Http\Controllers\HardwareController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,11 +35,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/change-password', [ProfileController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('password.update.submit');
 
-    Route::get('/sfp', [PerangkatController::class, 'sfpIndex'])->name('sfp.index');
-    Route::get('/sfp/export', [PerangkatController::class, 'exportSfp'])->name('sfp.export');
-    Route::get('/sfp/create', [PerangkatController::class, 'createSfp'])->name('sfp.create');
-    Route::post('/sfp', [PerangkatController::class, 'storeSfp'])->name('sfp.store');
-    Route::get('/sfp/{id}', [PerangkatController::class, 'showSfp'])->name('sfp.show');
-    Route::get('/sfp/{id}/edit', [PerangkatController::class, 'editSfp'])->name('sfp.edit');
-    Route::put('/sfp/{id}', [PerangkatController::class, 'updateSfp'])->name('sfp.update');
+    Route::prefix('sfp')->group(function () {
+        Route::get('/', [SFPController::class, 'sfpIndex'])->name('sfp.index');
+        Route::get('/export', [SFPController::class, 'exportSfp'])->name('sfp.export');
+        Route::get('/create', [SFPController::class, 'createSfp'])->name('sfp.create');
+        Route::post('/', [SFPController::class, 'storeSfp'])->name('sfp.store');
+        Route::get('/{id}', [SFPController::class, 'showSfp'])->name('sfp.show');
+        Route::get('/{id}/edit', [SFPController::class, 'editSfp'])->name('sfp.edit');
+        Route::put('/{id}', [SFPController::class, 'updateSfp'])->name('sfp.update');
+    });
+
+    Route::prefix('hardware')->group(function () {
+        Route::get('/', [HardwareController::class, 'index'])->name('hardware.index');
+        Route::get('/export', [HardwareController::class, 'export'])->name('hardware.export');
+        Route::get('/create', [HardwareController::class, 'create'])->name('hardware.create');
+        Route::post('/', [HardwareController::class, 'store'])->name('hardware.store');
+        Route::get('/{id}', [HardwareController::class, 'show'])->name('hardware.show');
+        Route::get('/{id}/edit', [HardwareController::class, 'edit'])->name('hardware.edit');
+        Route::put('/{id}', [HardwareController::class, 'update'])->name('hardware.update');
+
+        Route::post('/category', [HardwareController::class, 'storeCategory'])->name('hardware.category.store');
+    });
 });

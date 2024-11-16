@@ -8,7 +8,7 @@ use App\Models\Perangkat;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SfpExport;
 
-class PerangkatController extends Controller
+class SFPController extends Controller
 {
     public function sfpIndex(Request $request)
     {
@@ -18,8 +18,7 @@ class PerangkatController extends Controller
         $search = $request->input('search');
         $sfps = Perangkat::where('TYPE', 'SFP')
                     ->where(function ($query) use ($search) {
-                        $query->where('NAME', 'like', "%$search%")
-                              ->orWhere('BRAND', 'like', "%$search%")
+                        $query->where('BRAND', 'like', "%$search%")
                               ->orWhere('SERIAL_NUMBER', 'like', "%$search%")
                               ->orWhere('HOST_NAME', 'like', "%$search%");
                     })
@@ -48,11 +47,11 @@ class PerangkatController extends Controller
 
         // Define validation rules
         $rules = [
+            'HOST_NAME' => ['required', 'string', 'max:100', 'unique:perangkat,HOST_NAME'],
             'LOCATION' => ['required', 'string', 'max:100'],
             'VENDOR' => ['required', 'string', 'max:100'],
             'PRODUCT_ID_DEVICE' => ['required', 'string', 'max:100'],
             'SERIAL_NUMBER' => ['required', 'string', 'max:100'],
-            'HOST_NAME' => ['required', 'string', 'max:100'],
             'IP_ADDRESS' => ['required', 'string', 'ip'],
             'JUMLAH_SFP_DICABUT' => ['required', 'integer', 'min:0'],
         ];
@@ -71,7 +70,6 @@ class PerangkatController extends Controller
         // Add the fixed TYPE field
         $data = $validator->validated();
         $data['TYPE'] = 'SFP';
-        $data['NAME'] = 'Perangkat SFP';
 
         // Save the validated data
         Perangkat::create($data);

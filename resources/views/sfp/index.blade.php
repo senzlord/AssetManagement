@@ -9,21 +9,25 @@
     <!-- Flex container for heading and button -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Perangkat SFP</h1>
+        <div>
+            <div>
+                @can('add device data')
+                    <a href="{{ route('sfp.create') }}" class="btn btn-primary me-2">
+                        <i class="fas fa-plus"></i> Perangkat
+                    </a>
+                @endcan
+                <button class="btn btn-primary" onclick="window.location='{{ route('sfp.export') }}'">Export ke Excel</button>
+            </div>
+        </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="mb-3">
         <form action="{{ route('sfp.index') }}" method="GET" class="d-flex">
             <input type="text" class="form-control me-2" placeholder="Hostname/Brand/Serial Number..." name="search" value="{{ request('search') }}">
-            <button type="submit" class="btn btn-secondary">Search</button>
+            <button type="submit" class="btn btn-secondary">
+                <i class="fas fa-search"></i> Search
+            </button>
         </form>
-        <div>
-            @can('add device data')
-                <a href="{{ route('sfp.create') }}" class="btn btn-success me-2">
-                    <i class="fas fa-plus"></i> Perangkat
-                </a>
-            @endcan
-            <button class="btn btn-primary" onclick="window.location='{{ route('sfp.export') }}'">Export ke Excel</button>
-        </div>
     </div>
 
     <table class="table table-striped table-bordered">
@@ -35,7 +39,7 @@
                 <th>Serial Number Device</th>
                 <th>Hostname</th>
                 <th>IP Address</th>
-                <th>Jumlah SFP Dicabut</th>
+                <th>Jumlah SFP Tersedia</th>
                 <th>Action</th>
             </tr>
         </thead>

@@ -90,7 +90,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="background-color: #f8f9fa;"><strong>Jumlah SFP Dicabut</strong></td>
+                    <td style="background-color: #f8f9fa;"><strong>Jumlah SFP Tersedia</strong></td>
                     <td>
                         <input type="number" class="form-control @error('JUMLAH_SFP_DICABUT') is-invalid @enderror" name="JUMLAH_SFP_DICABUT" value="{{ old('JUMLAH_SFP_DICABUT', $sfp->JUMLAH_SFP_DICABUT) }}" required>
                         @error('JUMLAH_SFP_DICABUT')
