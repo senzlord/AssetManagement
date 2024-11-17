@@ -11,19 +11,24 @@
         <h1>Hardware</h1>
         <div>
             <!-- Kategori Button -->
+            @can('add category')
             <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#kategoriModal">
                 <i class="fas fa-list"></i> Kategori
             </button>
+            @endcan
             <a href="{{ route('hardware.create') }}" class="btn btn-primary me-2">
                 <i class="fas fa-plus"></i> Perangkat
             </a>
+            @can('generate reports')
             <button class="btn btn-primary" onclick="window.location='{{ route('hardware.export') }}'">
                 Export ke Excel
             </button>
+            @endcan
         </div>
     </div>
 
     <!-- Search bar -->
+    @can('search device data')
     <div class="mb-3">
         <form action="{{ route('hardware.index') }}" method="GET" class="d-flex">
             <input type="text" class="form-control me-2" placeholder="Hostname/Brand/Serial Number/Kategori..." name="search" value="{{ request('search') }}">
@@ -32,6 +37,7 @@
             </button>
         </form>
     </div>
+    @endcan
 
     <!-- Table -->
     <table class="table table-striped table-bordered">
@@ -71,7 +77,7 @@
 
     <!-- Pagination -->
     <div class="d-flex justify-content-center">
-        {{ $hardwares->links() }}
+        {{ $hardwares->links('vendor.pagination.bootstrap-5') }}
     </div>
 </div>
 

@@ -16,6 +16,11 @@
                     <i class="fas fa-edit"></i> Edit Perangkat
                 </a>
             @endcan
+            @can('delete device data')
+                <button type="button" class="btn btn-danger me-2" onclick="confirmDelete('{{ route('hardware.destroy', $hardware->PERANGKAT_ID) }}')">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            @endcan
                 <a href="{{ route('hardware.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
@@ -70,7 +75,7 @@
         <tbody>
             <tr>
                 <td style="width: 25%; background-color: #f8f9fa;"><strong>End-of-Support</strong></td>
-                <td id="eos_hardware_date">{{ $hardware->EOS_HARDWARE ? $hardware->EOS_HARDWARE->format('Y-m-d') : '-' }}</td>
+                <td id="eos_hardware_date">{{ $hardware->EOS_HARDWARE ? $hardware->EOS_HARDWARE->format('Y-m-d') : 'TBA' }}</td>
             </tr>
             <tr>
                 <td style="background-color: #f8f9fa;"><strong>Time Left (Days)</strong></td>
@@ -89,7 +94,7 @@
             </tr>
             <tr>
                 <td style="background-color: #f8f9fa;"><strong>End-of-Support</strong></td>
-                <td id="eos_firmware_date">{{ $hardware->EOS_FIRMWARE ? $hardware->EOS_FIRMWARE->format('Y-m-d') : '-' }}</td>
+                <td id="eos_firmware_date">{{ $hardware->EOS_FIRMWARE ? $hardware->EOS_FIRMWARE->format('Y-m-d') : 'TBA' }}</td>
             </tr>
             <tr>
                 <td style="background-color: #f8f9fa;"><strong>Time Left (Days)</strong></td>
@@ -104,7 +109,7 @@
         <tbody>
             <tr>
                 <td style="width: 25%; background-color: #f8f9fa;"><strong>End Date</strong></td>
-                <td id="licence_end_date">{{ $hardware->LICENCE_END_DATE ? $hardware->LICENCE_END_DATE->format('Y-m-d') : '-' }}</td>
+                <td id="licence_end_date">{{ $hardware->LICENCE_END_DATE ? $hardware->LICENCE_END_DATE->format('Y-m-d') : 'TBA' }}</td>
             </tr>
             <tr>
                 <td style="background-color: #f8f9fa;"><strong>Time Left (Days)</strong></td>
@@ -131,7 +136,7 @@
             </tr>
             <tr>
                 <td style="background-color: #f8f9fa;"><strong>End Date</strong></td>
-                <td id="ats_end_date">{{ $hardware->ATS_END_DATE ? $hardware->ATS_END_DATE->format('Y-m-d') : '-' }}</td>
+                <td id="ats_end_date">{{ $hardware->ATS_END_DATE ? $hardware->ATS_END_DATE->format('Y-m-d') : 'TBA' }}</td>
             </tr>
             <tr>
                 <td style="background-color: #f8f9fa;"><strong>Time Left (Days)</strong></td>

@@ -16,11 +16,14 @@
                         <i class="fas fa-plus"></i> Perangkat
                     </a>
                 @endcan
+                @can('generate reports')
                 <button class="btn btn-primary" onclick="window.location='{{ route('sfp.export') }}'">Export ke Excel</button>
+                @endcan
             </div>
         </div>
     </div>
 
+    @can('search device data')
     <div class="mb-3">
         <form action="{{ route('sfp.index') }}" method="GET" class="d-flex">
             <input type="text" class="form-control me-2" placeholder="Hostname/Brand/Serial Number..." name="search" value="{{ request('search') }}">
@@ -29,6 +32,7 @@
             </button>
         </form>
     </div>
+    @endcan
 
     <table class="table table-striped table-bordered">
         <thead class="table-light">
@@ -64,7 +68,7 @@
     </table>
 
     <div class="d-flex justify-content-center">
-        {{ $sfps->links() }}
+        {{ $sfps->links('vendor.pagination.bootstrap-5') }}
     </div>
 </div>
 @endsection

@@ -16,6 +16,11 @@
                     <i class="fas fa-edit"></i> Edit Perangkat
                 </a>
             @endcan
+            @can('delete device data')
+                <button type="button" class="btn btn-danger me-2" onclick="confirmDelete('{{ route('sfp.destroy', $sfp->PERANGKAT_ID) }}')">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            @endcan
                 <a href="{{ route('sfp.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to List
                 </a>

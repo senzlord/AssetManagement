@@ -185,4 +185,25 @@ class HardwareController extends Controller
 
         return redirect()->route('hardware.index')->with('success', 'Hardware Perangkat updated successfully.');
     }
+
+    public function destroy($id)
+    {
+        try {
+            // Find the resource by its ID
+            $Hardware = Perangkat::findOrFail($id);
+
+            // Delete the resource
+            $Hardware->delete();
+
+            // Log action if necessary
+            log_action('info', 'Hardware deleted successfully.', ['id' => $id]);
+
+            // Redirect back with success message
+            return redirect()->route('hardware.index')->with('success', 'Hardware deleted successfully.');
+        } catch (\Exception $e) {
+            // Handle errors and redirect with error message
+            log_action('error', 'Failed to delete Hardware.', ['error' => $e->getMessage()]);
+            return redirect()->route('hardware.index')->with('error', 'Failed to delete Hardware.');
+        }
+    }
 }

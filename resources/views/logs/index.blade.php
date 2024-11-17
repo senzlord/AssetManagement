@@ -30,7 +30,7 @@
 
         <!-- Pagination Links -->
         <div class="d-flex justify-content-center">
-            {{ $logs->links() }}
+            {{ $logs->links('vendor.pagination.bootstrap-5') }}
         </div>
     @endif
 </div>

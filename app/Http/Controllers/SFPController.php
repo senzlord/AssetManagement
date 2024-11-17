@@ -135,4 +135,25 @@ class SFPController extends Controller
         // Redirect to the index page with a success message
         return redirect()->route('sfp.index')->with('success', 'SFP Perangkat updated successfully.');
     }
+
+    public function destroy($id)
+    {
+        try {
+            // Find the resource by its ID
+            $sfp = NonHardware::findOrFail($id);
+
+            // Delete the resource
+            $sfp->delete();
+
+            // Log action if necessary
+            log_action('info', 'SFP deleted successfully.', ['id' => $id]);
+
+            // Redirect back with success message
+            return redirect()->route('sfp.index')->with('success', 'SFP deleted successfully.');
+        } catch (\Exception $e) {
+            // Handle errors and redirect with error message
+            log_action('error', 'Failed to delete SFP.', ['error' => $e->getMessage()]);
+            return redirect()->route('sfp.index')->with('error', 'Failed to delete SFP.');
+        }
+    }
 }

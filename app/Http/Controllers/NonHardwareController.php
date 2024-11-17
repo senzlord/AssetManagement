@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 use App\Models\Perangkat;
 use App\Models\Kategori;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\HardwareExport;
+use App\Exports\NonHardwareExport;
 
 class NonHardwareController extends Controller
 {
@@ -181,5 +181,26 @@ class NonHardwareController extends Controller
         log_action('info', 'Hardware Perangkat updated successfully.', ['id' => $id, 'data' => $data]);
 
         return redirect()->route('nonhardware.index')->with('success', 'Hardware Perangkat updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        try {
+            // Find the resource by its ID
+            $nonHardware = Perangkat::findOrFail($id);
+
+            // Delete the resource
+            $nonHardware->delete();
+
+            // Log action if necessary
+            log_action('info', 'Non-Hardware deleted successfully.', ['id' => $id]);
+
+            // Redirect back with success message
+            return redirect()->route('nonhardware.index')->with('success', 'Non-Hardware deleted successfully.');
+        } catch (\Exception $e) {
+            // Handle errors and redirect with error message
+            log_action('error', 'Failed to delete Non-Hardware.', ['error' => $e->getMessage()]);
+            return redirect()->route('nonhardware.index')->with('error', 'Failed to delete Non-Hardware.');
+        }
     }
 }

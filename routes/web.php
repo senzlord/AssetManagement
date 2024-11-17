@@ -13,6 +13,8 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// URL::forceScheme('https');
+
 Auth::routes(['register' => false]);
 
 Route::middleware(['auth'])->group(function () {
@@ -44,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}', [SFPController::class, 'showSfp'])->name('sfp.show');
         Route::get('/{id}/edit', [SFPController::class, 'editSfp'])->name('sfp.edit');
         Route::put('/{id}', [SFPController::class, 'updateSfp'])->name('sfp.update');
+        Route::delete('/{id}', [SFPController::class, 'destroy'])->name('sfp.destroy');
     });
 
     Route::prefix('hardware')->group(function () {
@@ -54,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}', [HardwareController::class, 'show'])->name('hardware.show');
         Route::get('/{id}/edit', [HardwareController::class, 'edit'])->name('hardware.edit');
         Route::put('/{id}', [HardwareController::class, 'update'])->name('hardware.update');
+        Route::delete('/{id}', [HardwareController::class, 'destroy'])->name('hardware.destroy');
 
         Route::post('/category', [HardwareController::class, 'storeCategory'])->name('hardware.category.store');
     });
@@ -66,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}', [NonHardwareController::class, 'show'])->name('nonhardware.show');
         Route::get('/{id}/edit', [NonHardwareController::class, 'edit'])->name('nonhardware.edit');
         Route::put('/{id}', [NonHardwareController::class, 'update'])->name('nonhardware.update');
+        Route::delete('/{id}', [NonHardwareController::class, 'destroy'])->name('nonhardware.destroy');
 
         Route::post('/category', [NonHardwareController::class, 'storeCategory'])->name('nonhardware.category.store');
     });
