@@ -13,6 +13,11 @@
             color: black !important;
             font-weight: bold;
         }
+        .readonly-disabled {
+            background-color: #e9ecef; /* Same as disabled input background */
+            opacity: 1; /* Override disabled input's lower opacity */
+            cursor: not-allowed; /* Show the 'not-allowed' cursor */
+        }
     </style>
     @yield('css')
 </head>

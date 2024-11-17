@@ -65,7 +65,68 @@
                     </tr>
                 </tbody>
             </table>
+            <!-- New Dynamic Form for SFP Entries -->
+            <h4 class="mt-4 d-flex justify-content-between align-items-center">
+                <span>SFP Entries</span>
+            </h4>
+            <table class="table table-bordered" id="sfpTable">
+                <thead>
+                    <tr>
+                        <th>Product-ID</th>
+                        <th>Serial Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $sfpEntries = json_decode($sfp->SFP, true);
+                    @endphp
+    
+                    @if (!empty($sfpEntries['product_id']) && !empty($sfpEntries['serial_number']))
+                        @foreach ($sfpEntries['product_id'] as $index => $productId)
+                            <tr>
+                                <td>
+                                    <input type="text" class="form-control" name="SFP[product_id][]" value="{{ $productId }}" disabled />
+                                </td>
+                                <td>
+                                    <input type="hidden" class="form-control serial-number-input" name="SFP[serial_number][]" value="{{ $sfpEntries['serial_number'][$index] }}" disabled />
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="3" class="text-center">No SFP data available</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+<script src="https://cdn.jsdelivr.net/npm/use-bootstrap-tag@2.2.2/dist/use-bootstrap-tag.min.js"></script>
+<script>
+    const tagInstances = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const serialInputs = document.querySelectorAll('.serial-number-input');
+
+        serialInputs.forEach(input => {
+            const tagInstance = UseBootstrapTag(input);
+        });
+        // Recalculate total tags on page load
+        recalculateTotalTags();
+    });
+
+    function recalculateTotalTags() {
+        const totalTags = tagInstances.reduce((sum, item) => sum + item.instance.getValues().length, 0);
+        // console.log('Total tags across all rows:', totalTags);
+
+        const jumlahSfpInput = document.querySelector('input[name="JUMLAH_SFP_DICABUT"]');
+        if (jumlahSfpInput) {
+            jumlahSfpInput.value = totalTags; // Update the value
+        }
+    }
+</script>
 @endsection

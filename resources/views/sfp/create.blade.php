@@ -1,5 +1,9 @@
 @extends('layouts.sidebar-layout')
 
+@section('css')
+<link href="https://cdn.jsdelivr.net/npm/use-bootstrap-tag@2.2.2/dist/use-bootstrap-tag.min.css" rel="stylesheet">
+@endsection
+
 @section('content')
 <div class="container">
     <!-- Display success or error alerts using the Alert component -->
@@ -97,7 +101,7 @@
                 <tr>
                     <td style="background-color: #f8f9fa;"><strong>Jumlah SFP Tersedia</strong></td>
                     <td>
-                        <input type="number" class="form-control @error('JUMLAH_SFP_DICABUT') is-invalid @enderror" name="JUMLAH_SFP_DICABUT" placeholder="Jumlah SFP Dicabut..." value="{{ old('JUMLAH_SFP_DICABUT') }}" required>
+                        <input type="number" class="form-control readonly-disabled @error('JUMLAH_SFP_DICABUT') is-invalid @enderror" name="JUMLAH_SFP_DICABUT" placeholder="Jumlah SFP Dicabut..." value="{{ old('JUMLAH_SFP_DICABUT') }}" required readonly>
                         @error('JUMLAH_SFP_DICABUT')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -105,6 +109,94 @@
                 </tr>
             </tbody>
         </table>
+        <!-- New Dynamic Form for SFP Entries -->
+        <h4 class="mt-4 d-flex justify-content-between align-items-center">
+            <span>SFP Entries</span>
+            <button type="button" class="btn btn-secondary" id="addSfpRow">
+                <i class="fas fa-plus"></i> Add SFP
+            </button>
+        </h4>
+        <table class="table table-bordered" id="sfpTable">
+            <thead>
+                <tr>
+                    <th>Product-ID</th>
+                    <th>Serial Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic rows will be added here -->
+            </tbody>
+        </table>
     </form>
 </div>
+@endsection
+
+@section('script')
+<script src="https://cdn.jsdelivr.net/npm/use-bootstrap-tag@2.2.2/dist/use-bootstrap-tag.min.js"></script>
+<script>
+    const tagInstances = [];
+    // Add new row dynamically
+    document.getElementById('addSfpRow').addEventListener('click', function () {
+        const tableBody = document.getElementById('sfpTable').querySelector('tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>
+                <input type="text" class="form-control" name="SFP[product_id][]" placeholder="Product-ID..." required/>
+            </td>
+            <td>
+                <input type="text" class="form-control serial-number-input" name="SFP[serial_number][]" placeholder="Add Serial Numbers..." required/>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger removeRow">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(newRow);
+
+        const lastRow = tableBody.lastElementChild;
+        const serialNumberInput = lastRow.querySelector('.serial-number-input');
+        
+        // Initialize UseBootstrapTag
+        const tagInstance = UseBootstrapTag(serialNumberInput);
+
+        // Add the instance to the tagInstances array
+        tagInstances.push({ element: lastRow, instance: tagInstance });
+
+        const serialNumberContainer = lastRow.querySelector('.use-bootstrap-tag');
+        const serialNumberTagsInput = serialNumberContainer.querySelector('input');
+        serialNumberTagsInput.addEventListener('blur', function () {
+            recalculateTotalTags();
+        });
+    });
+
+    // Remove row functionality
+    document.getElementById('sfpTable').addEventListener('click', function (e) {
+        if (e.target.classList.contains('removeRow') || e.target.closest('.removeRow')) {
+            const row = e.target.closest('tr');
+
+            // Remove the associated tagInstance by finding the matching row
+            const index = tagInstances.findIndex(item => item.element === row);
+            if (index > -1) {
+                tagInstances.splice(index, 1); // Remove the instance from the array
+            }
+
+            row.remove(); // Remove the row from the DOM
+
+            // Recalculate total tags after row removal
+            recalculateTotalTags();
+        }
+    });
+
+    function recalculateTotalTags() {
+        const totalTags = tagInstances.reduce((sum, item) => sum + item.instance.getValues().length, 0);
+        // console.log('Total tags across all rows:', totalTags);
+
+        const jumlahSfpInput = document.querySelector('input[name="JUMLAH_SFP_DICABUT"]');
+        if (jumlahSfpInput) {
+            jumlahSfpInput.value = totalTags; // Update the value
+        }
+    }
+</script>
 @endsection

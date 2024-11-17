@@ -42,6 +42,7 @@ class SFPController extends Controller
 
     public function storeSfp(Request $request)
     {
+        // dd($request->all());
         // Authorize the action
         $this->authorize('add device data');
 
@@ -54,6 +55,10 @@ class SFPController extends Controller
             'SERIAL_NUMBER' => ['required', 'string', 'max:100'],
             'IP_ADDRESS' => ['required', 'string', 'ip'],
             'JUMLAH_SFP_DICABUT' => ['required', 'integer', 'min:0'],
+        
+            // Add rules for sfp array
+            'SFP.product_id.*' => ['required', 'string', 'max:255'], // Validate each product ID
+            'SFP.serial_number.*' => ['required', 'string'], // Validate each serial number string
         ];
 
         // Run the validator
@@ -70,6 +75,24 @@ class SFPController extends Controller
         // Add the fixed TYPE field
         $data = $validator->validated();
         $data['TYPE'] = 'SFP';
+
+        // Process the SFP array
+        if (isset($data['SFP'])) {
+            $sfpData = [
+                'product_id' => [],
+                'serial_number' => []
+            ];
+
+            foreach ($data['SFP']['serial_number'] as $index => $serial) {
+                if ($serial !== null) {
+                    // Keep only entries where serial_number is not null
+                    $sfpData['product_id'][] = $data['SFP']['product_id'][$index];
+                    $sfpData['serial_number'][] = $serial;
+                }
+            }
+
+            $data['SFP'] = json_encode($sfpData);
+        }
 
         // Save the validated data
         Perangkat::create($data);
@@ -113,6 +136,10 @@ class SFPController extends Controller
             'HOST_NAME' => ['required', 'string', 'max:100'],
             'IP_ADDRESS' => ['required', 'string', 'ip'],
             'JUMLAH_SFP_DICABUT' => ['required', 'integer', 'min:0'],
+
+            // Add rules for sfp array
+            'SFP.product_id.*' => ['required', 'string', 'max:255'], // Validate each product ID
+            'SFP.serial_number.*' => ['required', 'string'], // Validate each serial number string
         ];
 
         // Validate the request data
@@ -126,11 +153,32 @@ class SFPController extends Controller
                 ->withInput();
         }
 
-        // Log the update action
-        log_action('info', 'Updating SFP device', ['id' => $id, 'data' => $validator->validated()]);
+        $data = $validator->validated();
+        $data['TYPE'] = 'SFP';
+
+        // Process the SFP array
+        if (isset($data['SFP'])) {
+            $sfpData = [
+                'product_id' => [],
+                'serial_number' => []
+            ];
+
+            foreach ($data['SFP']['serial_number'] as $index => $serial) {
+                if ($serial !== null) {
+                    // Keep only entries where serial_number is not null
+                    $sfpData['product_id'][] = $data['SFP']['product_id'][$index];
+                    $sfpData['serial_number'][] = $serial;
+                }
+            }
+
+            $data['SFP'] = json_encode($sfpData);
+        }
 
         // Update the SFP device with validated data
-        $sfp->update($validator->validated());
+        $sfp->update($data);
+
+        // Log the update action
+        log_action('info', 'Updating SFP device', ['id' => $id, 'data' => $data]);
 
         // Redirect to the index page with a success message
         return redirect()->route('sfp.index')->with('success', 'SFP Perangkat updated successfully.');
@@ -140,7 +188,7 @@ class SFPController extends Controller
     {
         try {
             // Find the resource by its ID
-            $sfp = NonHardware::findOrFail($id);
+            $sfp = Perangkat::findOrFail($id);
 
             // Delete the resource
             $sfp->delete();

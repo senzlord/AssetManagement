@@ -22,7 +22,6 @@ class CreatePerangkatTable extends Migration
             $table->string('LOCATION', 100)->nullable();
             $table->dateTime('LICENCE_END_DATE')->nullable();
             $table->string('PRODUCT_ID_DEVICE', 100)->nullable();
-            $table->json('SFP')->nullable();
             $table->integer('JUMLAH_SFP_DICABUT')->nullable();
             $table->integer('STOCK')->nullable();
             $table->string('CATEGORY', 100)->nullable();

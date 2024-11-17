@@ -47,6 +47,11 @@ class HardwareController extends Controller
 
         // Handle validation failure
         if ($validator->fails()) {
+            log_action('error', 'Category Hardware creation failed.', [
+                'errors' => $validator->errors()->toArray(),
+                'input' => $request->all(),
+            ]);
+
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
@@ -54,9 +59,16 @@ class HardwareController extends Controller
         }
 
         // Create the new category
-        Kategori::create([
+        $category = Kategori::create([
             'name' => $request->input('name'),
             'type' => $request->input('type'),
+        ]);
+
+        // Log successful creation
+        log_action('success', 'Category Hardware created successfully.', [
+            'category_id' => $category->id,
+            'name' => $category->name,
+            'type' => $category->type,
         ]);
 
         // Redirect back with a success message

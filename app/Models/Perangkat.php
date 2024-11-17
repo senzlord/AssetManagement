@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Perangkat extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
     // Specify the table name explicitly
     protected $table = 'perangkat';
@@ -28,7 +29,7 @@ class Perangkat extends Model
         'CATEGORY', 'VENDOR', 'TANGGAL_CABUT_SFP', 'BRAND', 'EOS_HARDWARE', 
         'EOS_HARDWARE_RISK', 'FIRMWARE', 'EOS_FIRMWARE', 'EOS_FIRMWARE_RISK', 
         'LICENSE_END_RISK', 'USER', 'NO_ASSET', 'NAMA_KONTRAK', 'NO_KONTRAK', 
-        'STATUS_SUPPORT', 'ATS_END_DATE', 'PIC', 'OS_VERSION',
+        'STATUS_SUPPORT', 'ATS_END_DATE', 'PIC', 'OS_VERSION', 'SFP'
     ];
 
     // Specify date fields to be automatically cast to Carbon instances
