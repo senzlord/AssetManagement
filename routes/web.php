@@ -25,7 +25,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/create', [UserListController::class, 'create'])->name('users.create');
     Route::post('/users', [UserListController::class, 'store'])->name('users.store');
     Route::get('/users/{id}/edit', [UserListController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::put('/users/{id}', [UserListController::class, 'update'])->name('users.update');
     Route::patch('/users/{id}/restore', [UserListController::class, 'restore'])->name('users.restore');
     Route::delete('/users/{id}', [UserListController::class, 'destroy'])->name('users.destroy');
 
