@@ -16,9 +16,11 @@
                 <i class="fas fa-list"></i> Kategori
             </button>
             @endcan
+            @can('add device data')
             <a href="{{ route('hardware.create') }}" class="btn btn-primary me-2">
                 <i class="fas fa-plus"></i> Perangkat
             </a>
+            @endcan
             @can('generate reports')
             <button class="btn btn-primary" onclick="window.location='{{ route('hardware.export') }}'">
                 Export ke Excel

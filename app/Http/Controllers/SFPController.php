@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -29,11 +29,16 @@ class SFPController extends Controller
 
     public function exportSfp()
     {
+        $this->authorize('generate reports');
+
         return Excel::download(new SfpExport, 'sfp-data.xlsx');
     }
 
     public function createSfp()
     {
+        // Authorize the action
+        $this->authorize('add device data');
+
         $latestId = Perangkat::latest('PERANGKAT_ID')->value('PERANGKAT_ID') ?? 0;
         $nextId = $latestId + 1;
 
@@ -55,7 +60,7 @@ class SFPController extends Controller
             'SERIAL_NUMBER' => ['required', 'string', 'max:100'],
             'IP_ADDRESS' => ['required', 'string', 'ip'],
             'JUMLAH_SFP_DICABUT' => ['required', 'integer', 'min:0'],
-        
+
             // Add rules for sfp array
             'SFP.product_id.*' => ['required', 'string', 'max:255'], // Validate each product ID
             'SFP.serial_number.*' => ['required', 'string'], // Validate each serial number string
@@ -113,6 +118,7 @@ class SFPController extends Controller
 
     public function editSfp($id)
     {
+        $this->authorize('edit device data');
         // Fetch the SFP device by ID
         $sfp = Perangkat::where('TYPE', 'SFP')
                         ->findOrFail($id);
@@ -123,6 +129,9 @@ class SFPController extends Controller
 
     public function updateSfp(Request $request, $id)
     {
+        // Authorize the action
+        $this->authorize('edit device data');
+
         // Fetch the existing SFP device
         $sfp = Perangkat::where('TYPE', 'SFP')
                         ->findOrFail($id);
@@ -186,6 +195,7 @@ class SFPController extends Controller
 
     public function destroy($id)
     {
+        $this->authorize('delete device data');
         try {
             // Find the resource by its ID
             $sfp = Perangkat::findOrFail($id);

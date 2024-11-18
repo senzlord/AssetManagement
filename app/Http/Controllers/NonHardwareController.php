@@ -31,14 +31,17 @@ class NonHardwareController extends Controller
 
         return view('nonhardware.index', compact('hardwares','categories'));
     }
-    
+
     public function export()
     {
+        $this->authorize('generate reports');
+
         return Excel::download(new NonHardwareExport, 'non_hardware-data.xlsx');
     }
 
     public function storeCategory(Request $request)
     {
+        $this->authorize('add category');
         // Validate the input
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -77,6 +80,8 @@ class NonHardwareController extends Controller
 
     public function create()
     {
+        $this->authorize('add device data');
+
         $latestId = Perangkat::latest('PERANGKAT_ID')->value('PERANGKAT_ID') ?? 0;
         $nextId = $latestId + 1;
 
@@ -133,6 +138,7 @@ class NonHardwareController extends Controller
 
     public function show($id)
     {
+        $this->authorize('view device data');
         $hardware = Perangkat::where('TYPE', 'Non-Hardware')
                             ->findOrFail($id);
         return view('nonhardware.show', compact('hardware'));
@@ -140,6 +146,7 @@ class NonHardwareController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('edit device data');
         $hardware = Perangkat::where('TYPE', 'Non-Hardware')
                             ->findOrFail($id);
         $categories = Kategori::where('type', 'Non-Hardware')->get();
@@ -197,6 +204,7 @@ class NonHardwareController extends Controller
 
     public function destroy($id)
     {
+        $this->authorize('delete device data');
         try {
             // Find the resource by its ID
             $nonHardware = Perangkat::findOrFail($id);
